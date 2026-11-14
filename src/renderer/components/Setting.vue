@@ -40,12 +40,6 @@
              @click="openLink(`https://uigf.org/${settingForm.lang.startsWith('zh-') ? 'zh/': 'en/'}`)">{{ text.UIGFLink }}</a>
         </p>
       </el-form-item>
-      <el-form-item :label="text.autoUpdate">
-        <el-switch
-          @change="saveSetting"
-          v-model="settingForm.autoUpdate">
-        </el-switch>
-      </el-form-item>
       <el-form-item :label="text.hideNovice">
         <el-switch
           @change="saveSetting"
