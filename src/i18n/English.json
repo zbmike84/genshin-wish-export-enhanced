@@ -171,7 +171,7 @@
   "ui.analysis.fortune.fiftyDetail": "Won {w} of {n} 50/50s; the Radiance model expects {e}",
   "ui.analysis.fortune.top": "top {p}%",
   "ui.analysis.fortune.bottom": "bottom {p}%",
-  "ui.analysis.fortune.note": "Uses the community rate model and the community's reading of Capturing Radiance (75% after 2 losses in a row, 100% after 3). Worst/best rate-up compare you with players who got the same number of rate-ups. Tiers: top 5% Blessed, 5–25% Lucky, 25–75% Average, 75–95% Unlucky, bottom 5% Cursed.",
+  "ui.analysis.fortune.note": "Uses the community rate model and the community's reading of Capturing Radiance (75% after 2 losses in a row, 100% after 3). Worst/best banner are picked by pulls spent beyond (or below) what their rate-ups should cost; the tier is that banner's own efficiency. Tiers: top 5% Blessed, 5–25% Lucky, 25–75% Average, 75–95% Unlucky, bottom 5% Cursed.",
   "ui.analysis.tier.blessed": "Blessed",
   "ui.analysis.tier.lucky": "Lucky",
   "ui.analysis.tier.average": "Average",
@@ -181,9 +181,6 @@
   "ui.analysis.fortune.up75Detail": "Rate-up on {w} of {n} non-guaranteed 5★; expected {e}",
   "ui.analysis.fortune.fullPity": "Full pity twice (≥{th} pulls)",
   "ui.analysis.fortune.fullPityDetail": "{k} of {n} rate-ups took {th}+ pulls; expected {e}",
-  "ui.analysis.fortune.worst": "Worst rate-up",
-  "ui.analysis.fortune.best": "Best rate-up",
-  "ui.analysis.fortune.extremeDetail": "{name}, {c} pulls ({d})",
   "ui.analysis.fortune.effShort": "Rate-up",
   "ui.analysis.fortune.bannerEff": "Pulls per rate-up: {u} rate-up in {t} pulls · {v}",
   "ui.analysis.fortune.bannerSpeed": "5★ speed: {n} × 5★ in {t} pulls · {v}",
@@ -194,5 +191,9 @@
   "ui.analysis.ledger.guarIn": "←lost on {up}",
   "ui.analysis.ledger.guarOutTip": "Lost here; the guarantee went to {name} on the {up} banner ({d})",
   "ui.analysis.ledger.guarPendingTip": "Lost here; the guarantee hasn't been used yet",
-  "ui.analysis.ledger.guarInTip": "Guaranteed after losing to {name} on the {up} banner ({d})"
+  "ui.analysis.ledger.guarInTip": "Guaranteed after losing to {name} on the {up} banner ({d})",
+  "ui.analysis.fortune.worstBanner": "Worst banner",
+  "ui.analysis.fortune.bestBanner": "Best banner",
+  "ui.analysis.fortune.worstBannerDetail": "{up} ({v}): {u} rate-up in {t} pulls; expected {e}, {x} pulls over",
+  "ui.analysis.fortune.bestBannerDetail": "{up} ({v}): {u} rate-up in {t} pulls; expected {e}, {x} pulls saved"
 }

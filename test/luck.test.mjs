@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  speedLuck, bannerSpeed, bannerEfficiency, fiftyLuck, fullPityLuck, extremesLuck, upCosts,
+  speedLuck, bannerSpeed, bannerEfficiency, fiftyLuck, fullPityLuck, bannerExtremes, upCosts,
   tierOf, radianceWinRate, upAverage, expectedUpAverage, costDist, pityDist,
 } from '../src/renderer/luck.js'
 import { pityModel } from '../src/renderer/analysis.js'
@@ -41,16 +41,12 @@ test('banner efficiency counts the losses at the end as an open run', () => {
   close(carried.top, bannerSpeed('character', [five(70, 'guaranteed')]).top, 1e-9, 'guaranteed start = one 5★')
 })
 
-test('pulls per rate-up, full pity and extremes', () => {
+test('pulls per rate-up and full pity', () => {
   const fives = [five(80, 'lose'), five(78, 'guaranteed'), five(10, 'win'), five(75, 'win')]
   assert.deepEqual(upCosts(fives).costs.map(c => c.cost), [158, 10, 75])
   const fp = fullPityLuck('character', fives)
   assert.equal(fp.k, 1)
   assert.equal(fp.n, 3)
-  const ex = extremesLuck('character', fives)
-  assert.equal(ex.worst.cost, 158)
-  assert.equal(ex.best.cost, 10)
-  assert.ok(ex.worst.top > 0.5 && ex.best.top < 0.5)
   assert.equal(fullPityLuck('character', []), null)
 })
 
@@ -74,4 +70,23 @@ test('tiers and expectations', () => {
   close(expectedUpAverage('weapon').post, 66.6, 0.2, 'weapon')
   const u = upAverage({ fives: [five(80, 'lose'), five(20, 'guaranteed'), five(50, 'win')] })
   assert.deepEqual([u.ups, u.pulls, u.avg], [2, 150, 75])
+})
+
+test('worst/best banner are ranked by excess pulls, not by percentile', () => {
+  const b = (key, pity, result) => ({ ...five(pity, result), bannerKey: key })
+  const fives = [
+    // small banner: a carried guarantee landing late (one slow 5★, little money)
+    b('small', 85, 'guaranteed'),
+    // big banner: 4 losses, 4 guarantees, 1 win -> 5 rate-ups in ~680 pulls (expected ~467)
+    ...[80, 75, 78, 76, 79, 77, 74, 80].map((p, i) => b('big', p, i % 2 ? 'guaranteed' : 'lose')), b('big', 60, 'win'),
+    // lucky banner: three quick wins
+    b('lucky', 20, 'win'), b('lucky', 30, 'win'), b('lucky', 25, 'win'),
+  ]
+  const ex = bannerExtremes('character', fives)
+  assert.equal(ex.n, 3)
+  assert.equal(ex.worst.first.bannerKey, 'big')
+  assert.ok(ex.worst.excess > 150, `excess ${ex.worst.excess}`)
+  assert.equal(ex.best.first.bannerKey, 'lucky')
+  assert.ok(ex.best.excess < -150)
+  assert.ok(ex.worst.top > 0.75, 'worst banner is at least unlucky on its own')
 })
