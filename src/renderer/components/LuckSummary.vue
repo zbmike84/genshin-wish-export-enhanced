@@ -59,8 +59,9 @@ const groups = computed(() => {
         up: (b.first.up || []).join(' / '), v: b.first.banner?.version || '', t: b.T, u: b.U,
         e: Math.round(b.expected), x: Math.abs(Math.round(b.excess)),
       })
-      if (ex.worst.excess > 0) row('worst', t.worstBanner, ex.worst.top, d(ex.worst, t.worstBannerDetail))
-      if (ex.best.excess < 0) row('best', t.bestBanner, ex.best.top, d(ex.best, t.bestBannerDetail))
+      // a few pulls either way isn't worth a row
+      if (ex.worst.excess >= 10) row('worst', t.worstBanner, ex.worst.top, d(ex.worst, t.worstBannerDetail))
+      if (ex.best.excess <= -10) row('best', t.bestBanner, ex.best.top, d(ex.best, t.bestBannerDetail))
     }
     out.push({ key: k, name: props.typeMap.get(k) || k, rows })
   }
