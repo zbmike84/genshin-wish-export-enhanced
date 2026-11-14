@@ -195,5 +195,17 @@
   "ui.analysis.fortune.worstBanner": "Worst banner",
   "ui.analysis.fortune.bestBanner": "Best banner",
   "ui.analysis.fortune.worstBannerDetail": "{up} ({v}): {u} rate-up in {t} pulls; expected {e}, {x} pulls over",
-  "ui.analysis.fortune.bestBannerDetail": "{up} ({v}): {u} rate-up in {t} pulls; expected {e}, {x} pulls saved"
+  "ui.analysis.fortune.bestBannerDetail": "{up} ({v}): {u} rate-up in {t} pulls; expected {e}, {x} pulls saved",
+  "ui.analysis.collection.tab": "Limited characters",
+  "ui.analysis.collection.cons": "C{n}",
+  "ui.analysis.collection.extra": "+{n}",
+  "ui.analysis.collection.summary": "{n} limited characters · {f} at C6 · {p} pulls in total",
+  "ui.analysis.collection.hint": "Constellation = copies − 1 (including copies from losses, the standard wish and chronicled wishes). Pulls = what each rate-up copy cost, including the 5★ lost before its guarantee; copies from losses or the standard wish add to the constellation only.",
+  "ui.analysis.collection.pulls": "pulls · {u} rate-up",
+  "ui.analysis.collection.avg": "{a} per copy",
+  "ui.analysis.collection.other": "plus {k} from losses or the standard wish",
+  "ui.analysis.collection.noPulls": "All from losses or the standard wish; no pulls charged",
+  "ui.analysis.collection.sortRecent": "Recent",
+  "ui.analysis.collection.sortCons": "Constellation",
+  "ui.analysis.collection.sortPulls": "Pulls"
 }

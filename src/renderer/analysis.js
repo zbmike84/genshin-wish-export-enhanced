@@ -1,5 +1,6 @@
 // Everything the analysis UI needs, derived from one account's records.
 import { judge, winRate } from './judge.js'
+import { buildCollection } from './luck.js'
 
 // Official rates as modelled by the community: flat base rate, then +step per pull from `soft`, hard pity at `cap`
 const MODELS = {
@@ -76,5 +77,7 @@ export function analyse(account, bannerData) {
   const order = new Map(versions.map(([v], i) => [v, i]))
   const perVersionSorted = [...perVersion.values()].sort((a, b) => order.get(a.version) - order.get(b.version))
   for (const v of perVersionSorted) v.fives.sort((a, b) => (a.time < b.time ? -1 : 1))
-  return { pools, issues, rate, radiance, versions: perVersionSorted }
+  const limited = new Set(bannerData.banners.filter(b => b.kind === 'character').flatMap(b => b.up5))
+  const collection = buildCollection(pools, f => limited.has(f.itemId))
+  return { pools, issues, rate, radiance, versions: perVersionSorted, collection }
 }
