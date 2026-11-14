@@ -41,6 +41,14 @@ function prepareBanners(bannerData, uid) {
   return byKind
 }
 
+// A loss and the guaranteed 5★ it paid for point at each other (they may sit on different banners)
+const ref = f => ({ id: f.id, name: f.name, time: f.time, key: f.bannerKey, up: f.up })
+function link(loss, guaranteed) {
+  if (!loss || !guaranteed) return
+  loss.guaranteeTo = ref(guaranteed)
+  guaranteed.guaranteeFrom = ref(loss)
+}
+
 export function judge(result, bannerData, { lang = 'zh-cn', uid = '' } = {}) {
   const names = bannerData.names[langKey(lang)] || bannerData.names.en
   const nameOf = id => names[id] ?? id
@@ -56,6 +64,7 @@ export function judge(result, bannerData, { lang = 'zh-cn', uid = '' } = {}) {
     const recs = [...records].sort((a, b) => (a[5] && b[5]) ? (BigInt(a[5]) < BigInt(b[5]) ? -1 : 1) : (a[0] < b[0] ? -1 : 1))
     const fives = []
     let pity = 0, guaranteed = false, streak = 0
+    let pendingLoss = null   // the lost 5★ whose guarantee hasn't been used yet
     for (const [time, name, , rank, gachaType, id] of recs) {
       pity++
       if (+rank !== 5) continue
@@ -70,6 +79,8 @@ export function judge(result, bannerData, { lang = 'zh-cn', uid = '' } = {}) {
       }
       const b = hit[0]
       f.banner = { version: b.version, name: b.name, start: b.start, end: b.end }
+      // the 5★ history groups by this key; a loss and its guarantee can land in different groups
+      f.bannerKey = `${b.start}|${f.gachaType}`
       if (kind === 'character') {
         const upId = f.gachaType === '400' ? b.up400 : b.up301
         if (!upId) { f.note = `no UP for gacha type ${f.gachaType}`; issues.push({ pool: key, ...f }); continue }
@@ -82,9 +93,10 @@ export function judge(result, bannerData, { lang = 'zh-cn', uid = '' } = {}) {
           f.result = 'guaranteed'
           if (!win) { f.note = 'lost a guaranteed pull'; issues.push({ pool: key, ...f }) }
           guaranteed = false
+          link(pendingLoss, f); pendingLoss = null
         } else {
           f.streakBefore = streak
-          if (win) { f.result = 'win'; streak = 0 } else { f.result = 'lose'; guaranteed = true; streak++ }
+          if (win) { f.result = 'win'; streak = 0 } else { f.result = 'lose'; guaranteed = true; streak++; pendingLoss = f }
         }
       } else {
         // weapon / chronicled: the Epitomized Path target is not in the records
@@ -92,6 +104,8 @@ export function judge(result, bannerData, { lang = 'zh-cn', uid = '' } = {}) {
         const inUp = f.up.includes(name)
         f.result = inUp ? (guaranteed ? 'up_guaranteed' : 'up') : 'off'
         if (guaranteed && !inUp) { f.note = 'off-banner right after off-banner'; issues.push({ pool: key, ...f }) }
+        if (guaranteed) { link(pendingLoss, f); pendingLoss = null }
+        if (!inUp) pendingLoss = f
         guaranteed = !inUp
       }
     }

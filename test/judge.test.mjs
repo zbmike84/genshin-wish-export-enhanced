@@ -97,3 +97,16 @@ test('helpers', () => {
   assert.equal(w.n, 3)
   assert.ok(w.lo < w.rate && w.rate < w.hi)
 })
+
+test('a loss and the guarantee it paid for are linked across banners', () => {
+  const r = new Map([['301', [
+    rec('2024-01-05 10:00:00', '迪卢克', 5, '400'),      // lose on the 400 banner
+    rec('2024-01-06 10:00:00', '钟离', 5, '301'),        // guarantee used on the 301 banner
+    rec('2024-01-07 10:00:00', '迪卢克', 5, '301'),      // lose, guarantee not used yet
+  ]]])
+  const [lose, guar, open] = judge(r, data, { uid: '861346531' }).pools['301'].fives
+  assert.equal(lose.guaranteeTo.name, '钟离')
+  assert.equal(guar.guaranteeFrom.name, '迪卢克')
+  assert.notEqual(lose.bannerKey, guar.bannerKey)
+  assert.equal(open.guaranteeTo, undefined)
+})
