@@ -89,11 +89,13 @@ const info = f => resultInfo(f, kind.value, props.text)
 const groups = computed(() => {
   const p = props.analysis.pools[pool.value]
   if (!p) return []
-  const out = []
+  // one group per banner even when pulls alternate between 301 and 400 (or between
+  // banners); groups are ordered by their most recent 5★
+  const out = [], byKey = new Map()
   for (const f of [...p.fives].reverse()) {
     const key = kind.value === 'standard' ? f.time.slice(0, 7) : `${f.banner?.start}|${f.gachaType}|${f.result === 'unknown' ? f.time : ''}`
-    let g = out[out.length - 1]
-    if (!g || g.key !== key) out.push((g = { key, items: [] }))
+    let g = byKey.get(key)
+    if (!g) { g = { key, items: [] }; byKey.set(key, g); out.push(g) }
     g.items.push(f)
   }
   for (const g of out) {
