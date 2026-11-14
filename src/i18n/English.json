@@ -161,5 +161,21 @@
   "ui.analysis.version.fives": "{n} × 5★",
   "ui.analysis.version.radiance": "5.0 Capturing Radiance",
   "ui.analysis.classic.title": "Classic stats",
-  "ui.analysis.issues": "{n} 5★ could not be matched to exactly one banner (marked Unknown); the banner data may be out of date."
+  "ui.analysis.issues": "{n} 5★ could not be matched to exactly one banner (marked Unknown); the banner data may be out of date.",
+  "ui.analysis.tiles.upAvg": "{v} pulls per rate-up 5★ (expected {e})",
+  "ui.analysis.fortune.title": "Luck (just for fun)",
+  "ui.analysis.fortune.hint": "Percentile = share of players pulling under the same rules who did better than you.",
+  "ui.analysis.fortune.speed": "{pool}: 5★ speed",
+  "ui.analysis.fortune.speedDetail": "{n} × 5★ in {t} pulls (incl. {c} pulls of current pity)",
+  "ui.analysis.fortune.fifty": "Character 50/50",
+  "ui.analysis.fortune.fiftyDetail": "Won {w} of {n} 50/50s; the Radiance model expects {e}",
+  "ui.analysis.fortune.top": "top {p}%",
+  "ui.analysis.fortune.bottom": "bottom {p}%",
+  "ui.analysis.fortune.note": "Uses the community rate model and the community's reading of Capturing Radiance (75% after 2 losses in a row, 100% after 3). Tiers: top 5% Blessed, 5–25% Lucky, 25–75% Average, 75–95% Unlucky, bottom 5% Cursed.",
+  "ui.analysis.fortune.bannerTip": "5★ speed on this banner: {n} × 5★ in {t} pulls",
+  "ui.analysis.tier.blessed": "Blessed",
+  "ui.analysis.tier.lucky": "Lucky",
+  "ui.analysis.tier.average": "Average",
+  "ui.analysis.tier.unlucky": "Unlucky",
+  "ui.analysis.tier.cursed": "Cursed"
 }

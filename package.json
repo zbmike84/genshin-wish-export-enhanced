@@ -20,7 +20,7 @@
     "build-update": "node .electron-vite/update.js",
     "dep:upgrade": "yarn upgrade-interactive --latest",
     "postinstall": "electron-builder install-app-deps",
-    "test": "node --test test/judge.test.mjs",
+    "test": "node --no-warnings --test test/judge.test.mjs test/luck.test.mjs",
     "gen:banners": "node scripts/gen-banners.mjs"
   },
   "build": {

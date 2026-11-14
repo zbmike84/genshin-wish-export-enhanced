@@ -161,5 +161,21 @@
   "ui.analysis.version.fives": "出金 {n} 个",
   "ui.analysis.version.radiance": "5.0 捕获明光",
   "ui.analysis.classic.title": "原版统计",
-  "ui.analysis.issues": "{n} 个 5★ 没能匹配到唯一卡池（标为“未知”），可能是卡池数据还没更新。"
+  "ui.analysis.issues": "{n} 个 5★ 没能匹配到唯一卡池（标为“未知”），可能是卡池数据还没更新。",
+  "ui.analysis.tiles.upAvg": "出 UP 平均 {v} 抽（理论 {e}）",
+  "ui.analysis.fortune.title": "运气档位（纯属娱乐）",
+  "ui.analysis.fortune.hint": "百分位 = 按同样规则抽卡的玩家里，比你更欧的人占多少。",
+  "ui.analysis.fortune.speed": "{pool}出金速度",
+  "ui.analysis.fortune.speedDetail": "{n} 个 5★ 用了 {t} 抽（含已垫 {c} 抽）",
+  "ui.analysis.fortune.fifty": "角色池小保底",
+  "ui.analysis.fortune.fiftyDetail": "{n} 次 50/50 没歪 {w} 次，按明光模型期望 {e} 次",
+  "ui.analysis.fortune.top": "前 {p}%",
+  "ui.analysis.fortune.bottom": "后 {p}%",
+  "ui.analysis.fortune.note": "基于社区整理的概率模型，以及对捕获明光规则的推测（连歪 2 次后没歪概率 75%，3 次后 100%）。分档：前 5% 欧皇，5–25% 欧，25–75% 正常，75–95% 非，最后 5% 大非酋。",
+  "ui.analysis.fortune.bannerTip": "这一期的出金速度：{n} 个 5★ 用了 {t} 抽",
+  "ui.analysis.tier.blessed": "欧皇",
+  "ui.analysis.tier.lucky": "欧",
+  "ui.analysis.tier.average": "正常",
+  "ui.analysis.tier.unlucky": "非",
+  "ui.analysis.tier.cursed": "大非酋"
 }

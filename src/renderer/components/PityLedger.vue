@@ -30,6 +30,9 @@
             <span v-if="g.items[0].gachaType === '400'" class="d">{{ text.ledger.wish2 }}</span>
           </template>
           <span class="d">{{ g.range }} · {{ fmt(text.ledger.count, { n: g.items.length }) }}</span>
+          <span v-if="g.luck" class="lk" :title="fmt(text.fortune.bannerTip, { n: g.items.length, t: g.luck.T })">
+            <i :style="{ background: TIER_COLORS[g.luck.tier] }"></i>{{ text.tier[g.luck.tier] }} · {{ topText(g.luck.top, text) }}
+          </span>
         </div>
         <div v-for="f of g.items" :key="f.id || f.time + f.name" class="row" tabindex="0" :data-id="f.id"
              @focus="focusTip($event, f)" @blur="hide">
@@ -54,7 +57,8 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { fmt, resultInfo, legendFor, POOL_ORDER, esc } from '../analysisUi'
+import { fmt, resultInfo, legendFor, POOL_ORDER, esc, topText, TIER_COLORS } from '../analysisUi'
+import { speedLuck, tierOf } from '../luck.js'
 import { pityModel, RADIANCE_SINCE } from '../analysis'
 
 const props = defineProps({ analysis: Object, typeMap: Map, text: Object, icons: Object })
@@ -84,6 +88,12 @@ const groups = computed(() => {
   for (const g of out) {
     const a = g.items[g.items.length - 1].time, b = g.items[0].time
     g.range = a.slice(0, 10) === b.slice(0, 10) ? a.slice(5, 10) : `${a.slice(5, 10)} – ${b.slice(5, 10)}`
+    // this banner's 5★ speed (pulls that produced its 5★s, carried-over pity included)
+    if (kind.value !== 'standard' && g.items[0].banner) {
+      const T = g.items.reduce((s, f) => s + f.pity, 0)
+      const r = speedLuck(kind.value, g.items.length, T)
+      g.luck = { ...r, tier: tierOf(r.top) }
+    }
   }
   return out
 })
@@ -151,6 +161,8 @@ h2 { margin: 0; font-size: 16px; font-weight: 600; color: #303133 }
 .ghead .v { min-width: 2.6em; font-weight: 600; font-size: 12px; color: #909399 }
 .ghead .t { font-weight: 600; color: #303133 }
 .ghead .d { font-size: 12px; color: #909399 }
+.ghead .lk { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; font-size: 12px; color: #606266; white-space: nowrap }
+.ghead .lk i { width: 8px; height: 8px; border-radius: 50% }
 .row { padding: 3px 4px; border-radius: 6px; font-size: 13px; color: #303133 }
 .row:hover { background: #f5f7fa }
 .row:focus-visible { outline: 2px solid #2a78d6; outline-offset: 1px }

@@ -1,5 +1,5 @@
 // Everything the analysis UI needs, derived from one account's records.
-import { judge, winRate } from './judge'
+import { judge, winRate } from './judge.js'
 
 // Official rates as modelled by the community: flat base rate, then +step per pull from `soft`, hard pity at `cap`
 const MODELS = {

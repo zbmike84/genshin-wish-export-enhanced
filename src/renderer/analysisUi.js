@@ -41,4 +41,16 @@ export function legendFor(kind, text) {
 }
 
 export const POOL_ORDER = ['301', '302', '500', '200']
+
+// Luck tiers on a diverging blue (lucky) - grey - red (unlucky) scale
+export const TIER_COLORS = { blessed: '#1c5cab', lucky: '#6da7ec', average: '#c0c4cc', unlucky: '#ec835a', cursed: '#d03b3b' }
+
+// 0.009 -> 'top 0.9%', 0.051 -> 'top 5.1%', 0.3 -> 'top 30%', 0.97 -> 'bottom 3.0%'
+// one decimal below 10% so values next to the 5% tier boundary don't round onto it
+export function topText(top, text) {
+  const lucky = top <= 0.5
+  const p = (lucky ? top : 1 - top) * 100
+  const s = p < 10 ? p.toFixed(1) : String(Math.round(p))
+  return fmt(lucky ? text.fortune.top : text.fortune.bottom, { p: s })
+}
 export const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))

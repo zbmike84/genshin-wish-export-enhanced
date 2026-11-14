@@ -38,6 +38,7 @@
       <el-alert v-if="analysis.issues.length" type="warning" :closable="false" show-icon
                 :title="fmt(aText.issues, { n: analysis.issues.length })"></el-alert>
       <status-tiles :analysis="analysis" :typeMap="typeMap" :text="aText"></status-tiles>
+      <luck-summary :analysis="analysis" :typeMap="typeMap" :text="aText"></luck-summary>
       <pity-ledger :analysis="analysis" :typeMap="typeMap" :text="aText" :icons="state.icons"></pity-ledger>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <pity-distribution :analysis="analysis" :typeMap="typeMap" :text="aText"></pity-distribution>
@@ -91,6 +92,7 @@ import PityLedger from './components/PityLedger.vue'
 import PityDistribution from './components/PityDistribution.vue'
 import LuckPanel from './components/LuckPanel.vue'
 import VersionChart from './components/VersionChart.vue'
+import LuckSummary from './components/LuckSummary.vue'
 import { analyse } from './analysis'
 import { fmt } from './analysisUi'
 import bannerData from '../data/banners.json'

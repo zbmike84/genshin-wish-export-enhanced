@@ -12,6 +12,7 @@
         <span v-if="t.radiance !== null">{{ fmt(text.tiles.radiance, { n: t.radiance }) }}</span>
       </div>
       <div class="line">{{ fmt(text.tiles.summary, { n: t.count, avg: t.avg }) }}</div>
+      <div v-if="t.upAvg" class="line">{{ t.upAvg }}</div>
     </div>
   </div>
 </template>
@@ -20,6 +21,7 @@
 import { computed } from 'vue'
 import { fmt, POOL_ORDER } from '../analysisUi'
 import { pityModel } from '../analysis'
+import { upAverage, expectedUpAverage } from '../luck.js'
 
 const props = defineProps({ analysis: Object, typeMap: Map, text: Object })
 
@@ -32,9 +34,17 @@ const tiles = computed(() => POOL_ORDER.filter(k => props.analysis.pools[k]).map
   else if (p.guaranteed) { next = t.nextGuaranteed; dot = 'guar' }
   else next = p.kind === 'character' ? t.next5050 : t.nextOpen
   const avg = p.fives.length ? (p.fives.reduce((s, f) => s + f.pity, 0) / p.fives.length).toFixed(1) : '–'
+  // pulls per rate-up 5★, character and weapon event wishes only
+  let upAvg = null
+  const exp = expectedUpAverage(p.kind)
+  const u = upAverage(p)
+  if (exp && u.avg) {
+    const lo = Math.round(Math.min(exp.pre, exp.post)), hi = Math.round(Math.max(exp.pre, exp.post))
+    upAvg = fmt(t.upAvg, { v: u.avg.toFixed(1), e: lo === hi ? lo : `${lo}–${hi}` })
+  }
   return {
     key: k, name: props.typeMap.get(k) || k, pity: p.pity, cap: m.cap, soft: m.soft, next, dot,
-    radiance: p.kind === 'character' ? p.streak : null, count: p.fives.length, avg,
+    radiance: p.kind === 'character' ? p.streak : null, count: p.fives.length, avg, upAvg,
   }
 }))
 </script>
