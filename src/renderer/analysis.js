@@ -1,5 +1,5 @@
 // Everything the analysis UI needs, derived from one account's records.
-import { judge, winRate } from './judge.js'
+import { judge, winRate, langKey } from './judge.js'
 import { buildCollection } from './luck.js'
 
 // Official rates as modelled by the community: flat base rate, then +step per pull from `soft`, hard pity at `cap`
@@ -36,7 +36,7 @@ function versionIndex(bannerData) {
   return [...first].sort((a, b) => (a[1] < b[1] ? -1 : 1))
 }
 
-export function analyse(account, bannerData) {
+export function analyse(account, bannerData, { extras = {} } = {}) {
   const { pools, issues } = judge(account.result, bannerData, { lang: account.lang, uid: account.uid })
 
   // pulls and 5★ per game version (records between banners count toward the previous version)
@@ -78,6 +78,11 @@ export function analyse(account, bannerData) {
   const perVersionSorted = [...perVersion.values()].sort((a, b) => order.get(a.version) - order.get(b.version))
   for (const v of perVersionSorted) v.fives.sort((a, b) => (a.time < b.time ? -1 : 1))
   const limited = new Set(bannerData.banners.filter(b => b.kind === 'character').flatMap(b => b.up5))
-  const collection = buildCollection(pools, f => limited.has(f.itemId))
-  return { pools, issues, rate, radiance, versions: perVersionSorted, collection }
+  // every 5★ character, in the account's language, for adding copies obtained outside wishes
+  const names = bannerData.names[langKey(account.lang)] || bannerData.names.en
+  const characters = Object.entries(bannerData.items).filter(([, v]) => v.r === 5 && v.t === 'c')
+    .map(([id]) => ({ id, name: names[id] || bannerData.names.en[id] || id }))
+  const nameOf = id => characters.find(c => c.id === id)?.name
+  const collection = buildCollection(pools, f => limited.has(f.itemId), extras, nameOf)
+  return { pools, issues, rate, radiance, versions: perVersionSorted, collection, characters }
 }

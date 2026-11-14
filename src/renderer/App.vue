@@ -39,7 +39,7 @@
                 :title="fmt(aText.issues, { n: analysis.issues.length })"></el-alert>
       <status-tiles :analysis="analysis" :typeMap="typeMap" :text="aText"></status-tiles>
       <luck-summary :analysis="analysis" :typeMap="typeMap" :text="aText"></luck-summary>
-      <pity-ledger :analysis="analysis" :typeMap="typeMap" :text="aText" :icons="state.icons"></pity-ledger>
+      <pity-ledger :analysis="analysis" :typeMap="typeMap" :text="aText" :icons="state.icons" @set-extra="setExtra"></pity-ledger>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <pity-distribution :analysis="analysis" :typeMap="typeMap" :text="aText"></pity-distribution>
         <luck-panel :analysis="analysis" :text="aText"></luck-panel>
@@ -115,7 +115,8 @@ const state = reactive({
   urlInput: '',
   authkeyTimeout: false,
   config: {},
-  icons: {}
+  icons: {},
+  extras: {}   // copies obtained outside wishes, per uid: { itemId: n }
 })
 
 const ui = computed(() => {
@@ -174,7 +175,7 @@ const analysis = computed(() => {
   const data = state.dataMap.get(state.current)
   if (!data) return null
   try {
-    return analyse(data, bannerData)
+    return analyse(data, bannerData, { extras: state.extras[state.current] || {} })
   } catch (e) {
     console.error(e)
     return null
@@ -183,15 +184,32 @@ const analysis = computed(() => {
 
 const aText = computed(() => state.i18n?.ui?.analysis)
 
+// hand-entered copies from gifts/exchanges, stored per uid by the main process
+watch(() => state.current, async (uid) => {
+  if (!uid || state.extras[uid]) return
+  try {
+    state.extras = { ...state.extras, [uid]: await ipcRenderer.invoke('GET_COLLECTION_EXTRA', uid) }
+  } catch (e) {
+    console.error(e)
+  }
+}, { immediate: true })
+const setExtra = async (itemId, n) => {
+  const uid = state.current
+  try {
+    state.extras = { ...state.extras, [uid]: await ipcRenderer.invoke('SET_COLLECTION_EXTRA', uid, itemId, n) }
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 // fetch icons for every 5★ on screen (cached on disk by the main process)
 watch(analysis, async (a) => {
   if (!a) return
   const want = new Map()
-  for (const p of Object.values(a.pools)) {
-    for (const f of p.fives) {
-      const item = f.itemId && bannerData.items[f.itemId]
-      if (item && !state.icons[f.itemId]) want.set(f.itemId, { id: f.itemId, t: item.t })
-    }
+  const ids = [...Object.values(a.pools).flatMap(p => p.fives.map(f => f.itemId)), ...a.collection.map(e => e.itemId)]
+  for (const id of ids) {
+    const item = id && bannerData.items[id]
+    if (item && !state.icons[id]) want.set(id, { id, t: item.t })
   }
   if (!want.size) return
   try {

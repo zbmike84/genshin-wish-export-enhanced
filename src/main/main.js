@@ -11,6 +11,7 @@ require('./getData')
 require('./excel')
 require('./UIGFJson')
 require('./icons')
+require('./collectionExtra')
 // require('./gists')
 const { getUpdateInfo } = require('./update/index')
 
