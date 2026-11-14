@@ -1,4 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
+
+// Chromium's sandboxed child processes can't start from a network location
+// (\\server\share or a mapped drive), so the app fails when kept on a NAS unless it
+// is launched with --no-sandbox. The sandbox adds little here: windows already run
+// with nodeIntegration and only load the bundled pages.
+app.commandLine.appendSwitch('no-sandbox')
 const { initWindow } = require('./utils')
 const { disableProxy, proxyStatus } = require('./module/system-proxy')
 require('./getData')
