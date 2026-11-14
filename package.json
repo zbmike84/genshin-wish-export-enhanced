@@ -19,7 +19,9 @@
     "start": "electron ./src/main/main.js",
     "build-update": "node .electron-vite/update.js",
     "dep:upgrade": "yarn upgrade-interactive --latest",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "test": "node --test test/judge.test.mjs",
+    "gen:banners": "node scripts/gen-banners.mjs"
   },
   "build": {
     "nsis": {
