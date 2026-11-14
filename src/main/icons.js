@@ -16,14 +16,25 @@ const SOURCES = [
 const SAFE_ID = /^[a-z0-9_-]+$/
 const failed = new Set()   // don't hammer the network for ids that 404 this session
 
+// Image type from the file signature. paimon-moe has some WebP files named .png
+// (odette.png), so the extension can't be trusted.
+function sniff(buf) {
+  if (!buf || buf.length < 12) return null
+  if (buf.readUInt32BE(0) === 0x89504e47) return 'image/png'
+  if (buf.toString('ascii', 0, 4) === 'RIFF' && buf.toString('ascii', 8, 12) === 'WEBP') return 'image/webp'
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'image/jpeg'
+  if (buf.toString('ascii', 0, 4) === 'GIF8') return 'image/gif'
+  return null
+}
+
 async function download(id, folder) {
   for (const base of SOURCES) {
     try {
       const res = await fetch(`${base}/${folder}/${id}.png`, { timeout: 15000 })
       if (!res.ok) continue
       const buf = await res.buffer()
-      // PNG signature check, so an HTML error page never lands in the cache
-      if (buf.length > 8 && buf.readUInt32BE(0) === 0x89504e47) return buf
+      // must really be an image, so an HTML error page never lands in the cache
+      if (sniff(buf)) return buf
     } catch (e) { /* try next source */ }
   }
   return null
@@ -50,7 +61,8 @@ ipcMain.handle('GET_ICONS', async (event, items, { offline = false } = {}) => {
   const worker = async () => {
     for (let item = queue.shift(); item; item = queue.shift()) {
       const buf = await getIcon(item.id, item.t, offline)
-      if (buf) out[item.id] = `data:image/png;base64,${buf.toString('base64')}`
+      const mime = sniff(buf)
+      if (mime) out[item.id] = `data:${mime};base64,${buf.toString('base64')}`
     }
   }
   await Promise.all(Array.from({ length: 6 }, worker))
